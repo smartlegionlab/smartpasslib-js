@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartPasswordLib Test Suite</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        h1, h2 { color: #2a82da; }
+        .test-section {
+            background: #2d2d2d;
+            border: 1px solid #3c3c3c;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        button {
+            background: #2a82da;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #1a6ab0; }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            background: #3c3c3c;
+            border: 1px solid #555;
+            color: white;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .result {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            word-break: break-all;
+        }
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+        .mode-btn {
+            background: #444;
+            padding: 8px 16px;
+        }
+        .mode-btn.active {
+            background: #2a82da;
+        }
+        .password-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4ec9b0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 SmartPasswordLib v1.0.0 Test Suite</h1>
+    <p>Cross-platform deterministic password generator for JavaScript</p>
+    <hr>
+
+    <div class="test-section">
+        <h2>📝 Interactive Test</h2>
+
+        <label>Secret phrase (min 12 chars):</label>
+        <input type="text" id="testSecret" value="MyCat🐱Hippo2026">
+
+        <label>Password length:</label>
+        <input type="number" id="testLength" value="16" min="4" max="1000">
+
+        <div class="mode-selector">
+            <button id="modeSmart" class="mode-btn active">🔑 Smart</button>
+            <button id="modeStrong" class="mode-btn">💪 Strong</button>
+            <button id="modeBase" class="mode-btn">📝 Base</button>
+            <button id="modeCode" class="mode-btn">🔢 Code</button>
+        </div>
+
+        <button id="testGenerateBtn">Generate Password</button>
+        <div id="testResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 Run Test Suite</h2>
+        <button id="runTestsBtn">Run All Tests</button>
+        <div id="testOutput" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📖 API Reference</h2>
+        <pre>
+SmartPasswordLib.VERSION
+SmartPasswordLib.CHARS
+
+
+SmartPasswordLib.generatePrivateKey(secret)
+SmartPasswordLib.generatePublicKey(secret)
+SmartPasswordLib.verifySecret(secret, pk)
+
+SmartPasswordLib.generateSmartPassword(secret, length)
+SmartPasswordLib.generateStrongPassword(length)
+SmartPasswordLib.generateBasePassword(length)
+SmartPasswordLib.generateCode(length)
+        </pre>
+    </div>
+
+    <script src="smartpasslib.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentMode = 'smart';
+
+            const modeSmart = document.getElementById('modeSmart');
+            const modeStrong = document.getElementById('modeStrong');
+            const modeBase = document.getElementById('modeBase');
+            const modeCode = document.getElementById('modeCode');
+            const testSecret = document.getElementById('testSecret');
+            const testLength = document.getElementById('testLength');
+            const testGenerateBtn = document.getElementById('testGenerateBtn');
+            const runTestsBtn = document.getElementById('runTestsBtn');
+            const testResult = document.getElementById('testResult');
+            const testOutput = document.getElementById('testOutput');
+
+            function setActiveMode(mode) {
+                [modeSmart, modeStrong, modeBase, modeCode].forEach(btn => {
+                    if (btn) btn.classList.remove('active');
+                });
+
+                if (mode === 'smart' && modeSmart) modeSmart.classList.add('active');
+                if (mode === 'strong' && modeStrong) modeStrong.classList.add('active');
+                if (mode === 'base' && modeBase) modeBase.classList.add('active');
+                if (mode === 'code' && modeCode) modeCode.classList.add('active');
+
+                currentMode = mode;
+
+                if (testLength) {
+                    if (mode === 'code') {
+                        testLength.min = 4;
+                        testLength.max = 20;
+                        if (parseInt(testLength.value) < 4) testLength.value = 8;
+                        if (parseInt(testLength.value) > 20) testLength.value = 8;
+                    } else {
+                        testLength.min = 12;
+                        testLength.max = 1000;
+                        if (parseInt(testLength.value) < 12) testLength.value = 16;
+                    }
+                }
+            }
+
+            if (modeSmart) modeSmart.onclick = function() { setActiveMode('smart'); };
+            if (modeStrong) modeStrong.onclick = function() { setActiveMode('strong'); };
+            if (modeBase) modeBase.onclick = function() { setActiveMode('base'); };
+            if (modeCode) modeCode.onclick = function() { setActiveMode('code'); };
+
+            if (testGenerateBtn) {
+                testGenerateBtn.onclick = async function() {
+                    const secret = testSecret ? testSecret.value : '';
+                    const length = parseInt(testLength ? testLength.value : '16');
+
+                    if (currentMode !== 'code' && (!secret || secret.length < 12)) {
+                        testResult.innerHTML = '<span style="color: #f48771">❌ Secret phrase must be at least 12 characters</span>';
+                        return;
+                    }
+
+                    if (currentMode === 'code' && (length < 4 || length > 20)) {
+                        testResult.innerHTML = '<span style="color: #f48771">❌ Code length must be between 4 and 20</span>';
+                        return;
+                    }
+
+                    if (currentMode !== 'code' && (length < 12 || length > 1000)) {
+                        testResult.innerHTML = '<span style="color: #f48771">❌ Password length must be between 12 and 1000</span>';
+                        return;
+                    }
+
+                    try {
+                        let password, modeName, extraInfo = '';
+
+                        switch(currentMode) {
+                            case 'smart':
+                                modeName = 'Smart Password';
+                                const publicKey = await SmartPasswordLib.generatePublicKey(secret);
+                                const privateKey = await SmartPasswordLib.generatePrivateKey(secret);
+                                const isValid = await SmartPasswordLib.verifySecret(secret, publicKey);
+                                password = await SmartPasswordLib.generateSmartPassword(secret, length);
+                                extraInfo = `<strong>Public Key:</strong><br>${publicKey}<br><br>
+                                            <strong>Verification:</strong> ${isValid ? '✅ Valid' : '❌ Invalid'}<br><br>`;
+                                break;
+                            case 'strong':
+                                modeName = 'Strong Random';
+                                password = await SmartPasswordLib.generateStrongPassword(length);
+                                break;
+                            case 'base':
+                                modeName = 'Base Random';
+                                password = await SmartPasswordLib.generateBasePassword(length);
+                                break;
+                            case 'code':
+                                modeName = 'Auth Code';
+                                password = await SmartPasswordLib.generateCode(length);
+                                break;
+                            default:
+                                password = await SmartPasswordLib.generateSmartPassword(secret, length);
+                                modeName = 'Smart Password';
+                        }
+
+                        testResult.innerHTML = `
+                            <strong>✅ ${modeName}</strong><br><br>
+                            ${extraInfo}
+                            <strong>Generated (${length} chars):</strong><br>
+                            <span class="password-display">${password}</span>
+                        `;
+                    } catch (err) {
+                        testResult.innerHTML = `<span style="color: #f48771">❌ Error: ${err.message}</span>`;
+                        console.error(err);
+                    }
+                };
+            }
+
+            if (runTestsBtn) {
+                runTestsBtn.onclick = async function() {
+                    testOutput.innerHTML = '<span style="color: #2a82da">Running tests...</span>';
+
+                    const results = [];
+
+                    try {
+                        const pwd = await SmartPasswordLib.generateSmartPassword("MyCat🐱Hippo2026", 16);
+                        results.push({ name: "Smart password generation", passed: pwd && pwd.length === 16 });
+                    } catch (e) { results.push({ name: "Smart password", passed: false, error: e.message }); }
+
+                    try {
+                        const secret = "Test123!@#Secret";
+                        const p1 = await SmartPasswordLib.generateSmartPassword(secret, 20);
+                        const p2 = await SmartPasswordLib.generateSmartPassword(secret, 20);
+                        results.push({ name: "Determinism", passed: p1 === p2 });
+                    } catch (e) { results.push({ name: "Determinism", passed: false, error: e.message }); }
+
+                    try {
+                        const p1 = await SmartPasswordLib.generateSmartPassword("SecretOne123456", 16);
+                        const p2 = await SmartPasswordLib.generateSmartPassword("SecretTwo123456", 16);
+                        results.push({ name: "Different secrets", passed: p1 !== p2 });
+                    } catch (e) { results.push({ name: "Different secrets", passed: false, error: e.message }); }
+
+                    try {
+                        const pwd = await SmartPasswordLib.generateStrongPassword(16);
+                        results.push({ name: "Strong random", passed: pwd && pwd.length === 16 });
+                    } catch (e) { results.push({ name: "Strong random", passed: false, error: e.message }); }
+
+                    try {
+                        const pwd = await SmartPasswordLib.generateBasePassword(16);
+                        results.push({ name: "Base random", passed: pwd && pwd.length === 16 });
+                    } catch (e) { results.push({ name: "Base random", passed: false, error: e.message }); }
+
+                    try {
+                        const code = await SmartPasswordLib.generateCode(8);
+                        results.push({ name: "Code generation", passed: code && code.length === 8 });
+                    } catch (e) { results.push({ name: "Code generation", passed: false, error: e.message }); }
+
+                    try {
+                        const pubKey = await SmartPasswordLib.generatePublicKey("Test123!@#Secret");
+                        const privKey = await SmartPasswordLib.generatePrivateKey("Test123!@#Secret");
+                        results.push({ name: "Key generation", passed: pubKey && privKey && pubKey !== privKey });
+                    } catch (e) { results.push({ name: "Key generation", passed: false, error: e.message }); }
+
+                    try {
+                        let passed = false;
+                        try {
+                            await SmartPasswordLib.generateSmartPassword("short", 16);
+                        } catch (e) {
+                            passed = e.message.includes('at least 12');
+                        }
+                        results.push({ name: "Min length (12 chars)", passed: passed });
+                    } catch (e) { results.push({ name: "Min length", passed: false, error: e.message }); }
+
+                    const passedCount = results.filter(r => r.passed).length;
+                    let html = `<strong>📊 Results: ${passedCount}/${results.length} passed</strong><br><br>`;
+                    results.forEach(r => {
+                        html += `${r.passed ? '✅' : '❌'} ${r.name}${r.error ? ` - ${r.error}` : ''}<br>`;
+                    });
+                    testOutput.innerHTML = html;
+                };
+            }
+        });
+    </script>
+</body>
+</html>
