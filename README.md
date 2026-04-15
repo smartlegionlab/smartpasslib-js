@@ -18,6 +18,8 @@
 
 **Summary:** Software provided "AS IS" without warranty. You assume all risks.
 
+**Full legal disclaimer:** See [DISCLAIMER.md](https://github.com/smartlegionlab/smartpasslib-js/blob/master/DISCLAIMER.md)
+
 ---
 
 ## Core Principles
