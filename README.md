@@ -177,15 +177,15 @@ const code = await SmartPasswordLib.generateCode(8);
 
 SmartPasswordLib JS produces **identical passwords** to:
 
-| Platform       | Repository                                                                                 |
-|----------------|--------------------------------------------------------------------------------------------|
-| Python         | [smartpasslib](https://github.com/smartlegionlab/smartpasslib)                             |
+| Platform | Repository |
+|----------|------------|
+| Python | [smartpasslib](https://github.com/smartlegionlab/smartpasslib) |
 | JavaScript | [smartpasslib-js](https://github.com/smartlegionlab/smartpasslib-js) |
-| Python/JS      | [Web Manager](https://github.com/smartlegionlab/smart-password-manager-web)                |
-| Android/Kotlin | [Mobile/Andorid manager](https://github.com/smartlegionlab/smart-password-manager-android) |
-| Python         | [Desktop Manager](https://github.com/smartlegionlab/smart-password-manager-desktop)        |
-| Python         | [CLI PassMan](https://github.com/smartlegionlab/clipassman)                                |
-| Python         | [CLI PassGen](https://github.com/smartlegionlab/clipassgen)                                |
+| Kotlin | [smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin) |
+| Web | [Web Manager](https://github.com/smartlegionlab/smart-password-manager-web) |
+| Android | [Android Manager](https://github.com/smartlegionlab/smart-password-manager-android) |
+| Desktop | [Desktop Manager](https://github.com/smartlegionlab/smart-password-manager-desktop) |
+| CLI | [CLI PassMan](https://github.com/smartlegionlab/clipassman) / [CLI PassGen](https://github.com/smartlegionlab/clipassgen) |
 
 ## Testing
 
