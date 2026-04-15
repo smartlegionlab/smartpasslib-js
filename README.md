@@ -191,9 +191,7 @@ SmartPasswordLib JS produces **identical passwords** to:
 
 Open `test.html` in your browser to run the test suite.
 
-## Ecosystem Integration
-
-### Part of Smart Password Suite
+## Ecosystem
 
 **Core Libraries:**
 - **[smartpasslib](https://github.com/smartlegionlab/smartpasslib)** - Python implementation
