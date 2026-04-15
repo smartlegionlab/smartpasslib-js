@@ -1,4 +1,4 @@
-# SmartPasswordLib JS <sup>v1.0.0</sup>
+# Smart Passwords Library JS <sup>v1.0.1</sup>
 
 **JavaScript implementation of deterministic smart password generator. Same secret + same length = same password across all platforms (Python, Go, Kotlin, JS).**
 
@@ -158,6 +158,7 @@ const code = await SmartPasswordLib.generateCode(8);
 - Case-sensitive
 - Use mix of: uppercase, lowercase, numbers, symbols, emoji, or Cyrillic
 - Never store digitally
+- **NEVER use your password description as secret phrase**
 
 ### Strong Secret Examples
 ```
@@ -175,17 +176,18 @@ const code = await SmartPasswordLib.generateCode(8);
 
 ## Cross-Platform Compatibility
 
-SmartPasswordLib JS produces **identical passwords** to:
+Smart Passwords Library JS produces **identical passwords** to:
 
-| Platform | Repository |
-|----------|------------|
-| Python | [smartpasslib](https://github.com/smartlegionlab/smartpasslib) |
-| JavaScript | [smartpasslib-js](https://github.com/smartlegionlab/smartpasslib-js) |
-| Kotlin | [smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin) |
-| Web | [Web Manager](https://github.com/smartlegionlab/smart-password-manager-web) |
-| Android | [Android Manager](https://github.com/smartlegionlab/smart-password-manager-android) |
-| Desktop | [Desktop Manager](https://github.com/smartlegionlab/smart-password-manager-desktop) |
-| CLI | [CLI PassMan](https://github.com/smartlegionlab/clipassman) / [CLI PassGen](https://github.com/smartlegionlab/clipassgen) |
+| Platform   | Repository                                                                                                                |
+|------------|---------------------------------------------------------------------------------------------------------------------------|
+| Python     | [smartpasslib](https://github.com/smartlegionlab/smartpasslib)                                                            |
+| JavaScript | [smartpasslib-js](https://github.com/smartlegionlab/smartpasslib-js)                                                      |
+| Kotlin     | [smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin)                                              |
+| Go         | [smartpasslib-go](https://github.com/smartlegionlab/smartpasslib-go)                                                      |
+| Web        | [Web Manager](https://github.com/smartlegionlab/smart-password-manager-web)                                               |
+| Android    | [Android Manager](https://github.com/smartlegionlab/smart-password-manager-android)                                       |
+| Desktop    | [Desktop Manager](https://github.com/smartlegionlab/smart-password-manager-desktop)                                       |
+| CLI        | [CLI PassMan](https://github.com/smartlegionlab/clipassman) / [CLI PassGen](https://github.com/smartlegionlab/clipassgen) |
 
 ## Testing
 
@@ -196,6 +198,8 @@ Open `test.html` in your browser to run the test suite.
 **Core Libraries:**
 - **[smartpasslib](https://github.com/smartlegionlab/smartpasslib)** - Python implementation
 - **[smartpasslib-js](https://github.com/smartlegionlab/smartpasslib-js)** - JavaScript implementation
+- **[smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin)** - Kotlin implementation
+- **[smartpasslib-go](https://github.com/smartlegionlab/smartpasslib-go)** - Go implementation
 
 **Applications:**
 - **[Desktop Manager](https://github.com/smartlegionlab/smart-password-manager-desktop)** - Cross-platform desktop app
@@ -216,21 +220,16 @@ Copyright (©) 2026, [Alexander Suvorov](https://github.com/smartlegionlab)
 
 ---
 
-## Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0.0 | 2026-04-15 | Initial release, compatible with smartpasslib v1.0.0 |
-
----
-
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/smartlegionlab/smartpasslib-js/issues)
-- **Documentation**: This README
+- **Documentation**: This [README](README.md)
 
 ---
 
 # Test Suite
 
 ![Test Suite](https://github.com/smartlegionlab/smartpasslib-js/blob/master/data/images/logo.png)
+
+---
+
