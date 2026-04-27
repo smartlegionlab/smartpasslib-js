@@ -1,5 +1,5 @@
 /**
- * Smart Passwords Library v1.0.1 - Client-side smart password generator
+ * SmartPassLib v1.0.2 - Client-side smart password generator
  * Cross-platform deterministic password generation
  * Same secret + same length = same password across all platforms
  *
@@ -25,14 +25,14 @@
  * Copyright (c) 2026, Alexander Suvorov
  */
 
-const SmartPasswordLib = (function() {
+const SmartPassLib = (function() {
     'use strict';
 
     // Character set for password generation (must match smartpasslib)
     const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$&*-_";
     const PRIVATE_ITERATIONS = 30;  // For private key (password generation)
     const PUBLIC_ITERATIONS = 60;   // For public key (verification, stored on server)
-    const VERSION = '1.0.1';
+    const VERSION = '1.0.2';
 
     /**
      * SHA-256 hash using Web Crypto API
@@ -232,8 +232,8 @@ const SmartPasswordLib = (function() {
 
 // Export for different environments
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = SmartPasswordLib;
+    module.exports = SmartPassLib;
 }
 if (typeof window !== 'undefined') {
-    window.SmartPasswordLib = SmartPasswordLib;
+    window.SmartPassLib = SmartPassLib;
 }

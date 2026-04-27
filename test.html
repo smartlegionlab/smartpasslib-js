@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Passwords Library Test Suite</title>
+    <title>SmartPassLib Test Suite</title>
     <style>
         body {
             font-family: monospace;
@@ -69,7 +69,7 @@
     </style>
 </head>
 <body>
-    <h1>🔐 Smart Passwords Library v1.0.1 Test Suite</h1>
+    <h1>🔐 SmartPassLib v1.0.2 Test Suite</h1>
     <p>Cross-platform deterministic password generator for JavaScript</p>
     <hr>
 
@@ -77,7 +77,7 @@
         <h2>📝 Interactive Test</h2>
 
         <label>Secret phrase (min 12 chars):</label>
-        <input type="text" id="testSecret" value="MyCat🐱Hippo2026">
+        <input type="text" id="testSecret" value="MyCatHippo2026">
 
         <label>Password length:</label>
         <input type="number" id="testLength" value="16" min="4" max="1000">
@@ -102,18 +102,18 @@
     <div class="test-section">
         <h2>📖 API Reference</h2>
         <pre>
-SmartPasswordLib.VERSION
-SmartPasswordLib.CHARS
+SmartPassLib.VERSION
+SmartPassLib.CHARS
 
 
-SmartPasswordLib.generatePrivateKey(secret)
-SmartPasswordLib.generatePublicKey(secret)
-SmartPasswordLib.verifySecret(secret, pk)
+SmartPassLib.generatePrivateKey(secret)
+SmartPassLib.generatePublicKey(secret)
+SmartPassLib.verifySecret(secret, pk)
 
-SmartPasswordLib.generateSmartPassword(secret, length)
-SmartPasswordLib.generateStrongPassword(length)
-SmartPasswordLib.generateBasePassword(length)
-SmartPasswordLib.generateCode(length)
+SmartPassLib.generateSmartPassword(secret, length)
+SmartPassLib.generateStrongPassword(length)
+SmartPassLib.generateBasePassword(length)
+SmartPassLib.generateCode(length)
         </pre>
     </div>
 
@@ -190,27 +190,27 @@ SmartPasswordLib.generateCode(length)
                         switch(currentMode) {
                             case 'smart':
                                 modeName = 'Smart Password';
-                                const publicKey = await SmartPasswordLib.generatePublicKey(secret);
-                                const privateKey = await SmartPasswordLib.generatePrivateKey(secret);
-                                const isValid = await SmartPasswordLib.verifySecret(secret, publicKey);
-                                password = await SmartPasswordLib.generateSmartPassword(secret, length);
+                                const publicKey = await SmartPassLib.generatePublicKey(secret);
+                                const privateKey = await SmartPassLib.generatePrivateKey(secret);
+                                const isValid = await SmartPassLib.verifySecret(secret, publicKey);
+                                password = await SmartPassLib.generateSmartPassword(secret, length);
                                 extraInfo = `<strong>Public Key:</strong><br>${publicKey}<br><br>
                                             <strong>Verification:</strong> ${isValid ? '✅ Valid' : '❌ Invalid'}<br><br>`;
                                 break;
                             case 'strong':
                                 modeName = 'Strong Random';
-                                password = await SmartPasswordLib.generateStrongPassword(length);
+                                password = await SmartPassLib.generateStrongPassword(length);
                                 break;
                             case 'base':
                                 modeName = 'Base Random';
-                                password = await SmartPasswordLib.generateBasePassword(length);
+                                password = await SmartPassLib.generateBasePassword(length);
                                 break;
                             case 'code':
                                 modeName = 'Auth Code';
-                                password = await SmartPasswordLib.generateCode(length);
+                                password = await SmartPassLib.generateCode(length);
                                 break;
                             default:
-                                password = await SmartPasswordLib.generateSmartPassword(secret, length);
+                                password = await SmartPassLib.generateSmartPassword(secret, length);
                                 modeName = 'Smart Password';
                         }
 
@@ -234,48 +234,48 @@ SmartPasswordLib.generateCode(length)
                     const results = [];
 
                     try {
-                        const pwd = await SmartPasswordLib.generateSmartPassword("MyCat🐱Hippo2026", 16);
+                        const pwd = await SmartPassLib.generateSmartPassword("MyCatHippo2026", 16);
                         results.push({ name: "Smart password generation", passed: pwd && pwd.length === 16 });
                     } catch (e) { results.push({ name: "Smart password", passed: false, error: e.message }); }
 
                     try {
                         const secret = "Test123!@#Secret";
-                        const p1 = await SmartPasswordLib.generateSmartPassword(secret, 20);
-                        const p2 = await SmartPasswordLib.generateSmartPassword(secret, 20);
+                        const p1 = await SmartPassLib.generateSmartPassword(secret, 20);
+                        const p2 = await SmartPassLib.generateSmartPassword(secret, 20);
                         results.push({ name: "Determinism", passed: p1 === p2 });
                     } catch (e) { results.push({ name: "Determinism", passed: false, error: e.message }); }
 
                     try {
-                        const p1 = await SmartPasswordLib.generateSmartPassword("SecretOne123456", 16);
-                        const p2 = await SmartPasswordLib.generateSmartPassword("SecretTwo123456", 16);
+                        const p1 = await SmartPassLib.generateSmartPassword("SecretOne123456", 16);
+                        const p2 = await SmartPassLib.generateSmartPassword("SecretTwo123456", 16);
                         results.push({ name: "Different secrets", passed: p1 !== p2 });
                     } catch (e) { results.push({ name: "Different secrets", passed: false, error: e.message }); }
 
                     try {
-                        const pwd = await SmartPasswordLib.generateStrongPassword(16);
+                        const pwd = await SmartPassLib.generateStrongPassword(16);
                         results.push({ name: "Strong random", passed: pwd && pwd.length === 16 });
                     } catch (e) { results.push({ name: "Strong random", passed: false, error: e.message }); }
 
                     try {
-                        const pwd = await SmartPasswordLib.generateBasePassword(16);
+                        const pwd = await SmartPassLib.generateBasePassword(16);
                         results.push({ name: "Base random", passed: pwd && pwd.length === 16 });
                     } catch (e) { results.push({ name: "Base random", passed: false, error: e.message }); }
 
                     try {
-                        const code = await SmartPasswordLib.generateCode(8);
+                        const code = await SmartPassLib.generateCode(8);
                         results.push({ name: "Code generation", passed: code && code.length === 8 });
                     } catch (e) { results.push({ name: "Code generation", passed: false, error: e.message }); }
 
                     try {
-                        const pubKey = await SmartPasswordLib.generatePublicKey("Test123!@#Secret");
-                        const privKey = await SmartPasswordLib.generatePrivateKey("Test123!@#Secret");
+                        const pubKey = await SmartPassLib.generatePublicKey("Test123!@#Secret");
+                        const privKey = await SmartPassLib.generatePrivateKey("Test123!@#Secret");
                         results.push({ name: "Key generation", passed: pubKey && privKey && pubKey !== privKey });
                     } catch (e) { results.push({ name: "Key generation", passed: false, error: e.message }); }
 
                     try {
                         let passed = false;
                         try {
-                            await SmartPasswordLib.generateSmartPassword("short", 16);
+                            await SmartPassLib.generateSmartPassword("short", 16);
                         } catch (e) {
                             passed = e.message.includes('at least 12');
                         }

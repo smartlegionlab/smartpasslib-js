@@ -1,4 +1,4 @@
-# Smart Passwords Library JS <sup>v1.0.1</sup>
+# SmartPassLib JS <sup>v1.0.2</sup>
 
 **JavaScript implementation of deterministic smart password generator. Same secret + same length = same password across all platforms (Python, Go, Kotlin, JS).**
 
@@ -82,7 +82,7 @@ Just copy `smartpasslib.js` to your project and include it:
 const secret = "MyCat🐱Hippo2026";
 const length = 16;
 
-const password = await SmartPasswordLib.generateSmartPassword(secret, length);
+const password = await SmartPassLib.generateSmartPassword(secret, length);
 console.log(password); // "wcJjBKIhsgV%!6Iq"
 ```
 
@@ -90,8 +90,8 @@ console.log(password); // "wcJjBKIhsgV%!6Iq"
 ```javascript
 const secret = "MyCat🐱Hippo2026";
 
-const publicKey = await SmartPasswordLib.generatePublicKey(secret);
-const privateKey = await SmartPasswordLib.generatePrivateKey(secret);
+const publicKey = await SmartPassLib.generatePublicKey(secret);
+const privateKey = await SmartPassLib.generatePrivateKey(secret);
 
 console.log('Public Key (store on server):', publicKey);
 console.log('Private Key (never store):', privateKey);
@@ -102,22 +102,22 @@ console.log('Private Key (never store):', privateKey);
 const secret = "MyCat🐱Hippo2026";
 const storedPublicKey = "..."; // from server
 
-const isValid = await SmartPasswordLib.verifySecret(secret, storedPublicKey);
+const isValid = await SmartPassLib.verifySecret(secret, storedPublicKey);
 if (isValid) {
-    const password = await SmartPasswordLib.generateSmartPassword(secret, 16);
+    const password = await SmartPassLib.generateSmartPassword(secret, 16);
 }
 ```
 
 ### Generate Random Passwords
 ```javascript
 // Strong random (cryptographically secure)
-const strong = await SmartPasswordLib.generateStrongPassword(20);
+const strong = await SmartPassLib.generateStrongPassword(20);
 
 // Base random
-const base = await SmartPasswordLib.generateBasePassword(16);
+const base = await SmartPassLib.generateBasePassword(16);
 
 // Authentication code (4-20 chars)
-const code = await SmartPasswordLib.generateCode(8);
+const code = await SmartPassLib.generateCode(8);
 ```
 
 ## API Reference
@@ -176,7 +176,7 @@ const code = await SmartPasswordLib.generateCode(8);
 
 ## Cross-Platform Compatibility
 
-Smart Passwords Library JS produces **identical passwords** to:
+SmartPassLib JS produces **identical passwords** to:
 
 | Platform   | Repository                                                                                                                |
 |------------|---------------------------------------------------------------------------------------------------------------------------|
