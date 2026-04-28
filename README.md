@@ -1,6 +1,16 @@
-# SmartPassLib JS <sup>v1.0.2</sup>
+# SmartPassLib JS <sup>v1.0.3</sup>
 
-**JavaScript implementation of deterministic smart password generator. Same secret + same length = same password across all platforms (Python, Go, Kotlin, JS).**
+---
+
+**Smart Passwords Library**: Cryptographic password generation and management without storage. 
+Generate passwords from secrets, verify knowledge without exposure, manage metadata securely.
+
+**Now with Cross-Platform Determinism**: Same secret + same parameters = identical password on 
+**JavaScript, C#, Python, Go, Kotlin** and any language with SHA-256.
+
+**Decentralized by Design**: Unlike traditional password managers that store encrypted vaults on central servers, 
+smartpasslib stores nothing. Your secrets never leave your device. Passwords are regenerated on-demand — 
+**no cloud, no database, no trust required**.
 
 ---
 
@@ -24,14 +34,16 @@
 
 ## Core Principles
 
-- **Deterministic Generation**: Same secret + same length = same password, every time
-- **Zero Storage**: Passwords exist only when generated, never stored
-- **Cross-Platform**: Compatible with Python, Go, Kotlin implementations
-- **Client-Side Only**: All cryptographic operations happen in the browser
-- **Web Crypto API**: Uses native browser cryptography
+- **Zero-Storage Security**: No passwords or secret phrases are ever stored or transmitted
+- **Decentralized Architecture**: No central servers, no cloud dependency, no third-party trust required
+- **Cross-Platform Deterministic Generation**: Identical secret + parameters = identical password **on any language** (SHA-256 based)
+- **Metadata Only**: Store only verification metadata (public keys, descriptions, lengths)
+- **On-Demand Regeneration**: Passwords are recalculated when needed, never retrieved from storage
+- **Cryptographically Secure**: Uses Web Crypto API
 
 ## Key Features
 
+- **Decentralized & Serverless**: No central database, no cloud lock-in, complete user sovereignty
 - **Smart Password Generation**: Deterministic from secret phrase
 - **Public/Private Key System**: 30 iterations for private key, 60 for public key
 - **Secret Verification**: Verify secret without exposing it
@@ -42,9 +54,10 @@
 ## Security Model
 
 - **Proof of Knowledge**: Public keys verify secrets without exposing them
-- **Deterministic Certainty**: Mathematical certainty in password regeneration
-- **Ephemeral Passwords**: Passwords exist only in memory during generation
-- **Local Computation**: No data leaves your browser
+- **Decentralized Trust**: No third party needed — you control your secrets completely
+- **Deterministic Security**: Same input = same output, always reproducible across platforms
+- **No Vulnerable Metadata Storage**: Only public keys and descriptions can be stored (optional)
+- **Zero Storage of Secrets**: Secret phrases exist only in your memory, private keys are derived on-demand and never persisted
 - **No Recovery Backdoors**: Lost secret = permanently lost passwords (by design)
 
 ---
@@ -58,14 +71,20 @@
 
 ## Technical Foundation
 
-**Key derivation (same as Python/Go/Kotlin versions):**
+**Key derivation (same as Python/Go/Kotlin/C# versions):**
 
-| Key Type | Iterations | Purpose |
-|----------|------------|---------|
-| Private Key | 30 | Password generation (never stored) |
-| Public Key | 60 | Verification (stored on server) |
+| Key Type    | Iterations | Purpose                                                 |
+|-------------|------------|---------------------------------------------------------|
+| Private Key | 30         | Password generation (never stored, never transmitted)   |
+| Public Key  | 60         | Verification (stored locally)                           |
 
 **Character Set:** `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$&*-_`
+
+**Decentralized Architecture**:
+- No central authority required
+- Metadata can be synced via any channel (USB, cloud, even paper)
+- Your security depends only on your secret phrase, not on any service provider
+- Works offline — no internet connection required
 
 ## Installation
 
@@ -79,28 +98,28 @@ Just copy `smartpasslib.js` to your project and include it:
 
 ### Generate Smart Password
 ```javascript
-const secret = "MyCat🐱Hippo2026";
+const secret = "MyStrongSecretPhrase2026!";
 const length = 16;
 
 const password = await SmartPassLib.generateSmartPassword(secret, length);
-console.log(password); // "wcJjBKIhsgV%!6Iq"
+console.log(password); // e.g., "jrh_E5V!2#neNjnP"
 ```
 
 ### Generate Public/Private Keys
 ```javascript
-const secret = "MyCat🐱Hippo2026";
+const secret = "MyStrongSecretPhrase2026!";
 
 const publicKey = await SmartPassLib.generatePublicKey(secret);
 const privateKey = await SmartPassLib.generatePrivateKey(secret);
 
-console.log('Public Key (store on server):', publicKey);
+console.log('Public Key (store locally):', publicKey);
 console.log('Private Key (never store):', privateKey);
 ```
 
 ### Verify Secret Against Public Key
 ```javascript
-const secret = "MyCat🐱Hippo2026";
-const storedPublicKey = "..."; // from server
+const secret = "MyStrongSecretPhrase2026!";
+const storedPublicKey = "..."; // from local
 
 const isValid = await SmartPassLib.verifySecret(secret, storedPublicKey);
 if (isValid) {
@@ -124,32 +143,32 @@ const code = await SmartPassLib.generateCode(8);
 
 ### Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `VERSION` | string | Library version |
-| `CHARS` | string | Character set used for generation |
-| `PRIVATE_ITERATIONS` | number | 30 iterations for private key |
-| `PUBLIC_ITERATIONS` | number | 60 iterations for public key |
+| Property             | Type   | Description                       |
+|----------------------|--------|-----------------------------------|
+| `VERSION`            | string | Library version                   |
+| `CHARS`              | string | Character set used for generation |
+| `PRIVATE_ITERATIONS` | number | 30 iterations for private key     |
+| `PUBLIC_ITERATIONS`  | number | 60 iterations for public key      |
 
 ### Methods
 
-| Method | Parameters | Returns | Description |
-|--------|------------|---------|-------------|
-| `generatePrivateKey(secret)` | secret: string | Promise\<string\> | Private key (30 iterations) |
-| `generatePublicKey(secret)` | secret: string | Promise\<string\> | Public key (60 iterations) |
-| `verifySecret(secret, publicKey)` | secret, publicKey | Promise\<boolean\> | Verify secret matches public key |
-| `generateSmartPassword(secret, length)` | secret, length | Promise\<string\> | Deterministic password |
-| `generateStrongPassword(length)` | length | Promise\<string\> | Cryptographically random |
-| `generateBasePassword(length)` | length | Promise\<string\> | Simple random password |
-| `generateCode(length)` | length | Promise\<string\> | Short code (4-20 chars) |
+| Method                                  | Parameters        | Returns            | Description                      |
+|-----------------------------------------|-------------------|--------------------|----------------------------------|
+| `generatePrivateKey(secret)`            | secret: string    | Promise\<string\>  | Private key (30 iterations)      |
+| `generatePublicKey(secret)`             | secret: string    | Promise\<string\>  | Public key (60 iterations)       |
+| `verifySecret(secret, publicKey)`       | secret, publicKey | Promise\<boolean\> | Verify secret matches public key |
+| `generateSmartPassword(secret, length)` | secret, length    | Promise\<string\>  | Deterministic password           |
+| `generateStrongPassword(length)`        | length            | Promise\<string\>  | Cryptographically random         |
+| `generateBasePassword(length)`          | length            | Promise\<string\>  | Simple random password           |
+| `generateCode(length)`                  | length            | Promise\<string\>  | Short code (4-20 chars)          |
 
 ### Input Validation
 
-| Parameter | Minimum | Maximum |
-|-----------|---------|---------|
-| Secret phrase | 12 chars | unlimited |
+| Parameter       | Minimum  | Maximum    |
+|-----------------|----------|------------|
+| Secret phrase   | 12 chars | unlimited  |
 | Password length | 12 chars | 1000 chars |
-| Code length | 4 chars | 20 chars |
+| Code length     | 4 chars  | 20 chars   |
 
 ## Security Requirements
 
@@ -162,32 +181,41 @@ const code = await SmartPassLib.generateCode(8);
 
 ### Strong Secret Examples
 ```
-✅ "MyCat🐱Hippo2026"        — emoji + mixed case + numbers
-✅ "P@ssw0rd!LongSecret"     — special chars + numbers + length
-✅ "КотБегемот2026НаДиете"   — Cyrillic + numbers
+✅ "MyStrongSecretPhrase2026!"   — mixed case + numbers + symbols
+✅ "P@ssw0rd!LongSecret"         — special chars + numbers + length
+✅ "КотБегемот2026НаДиете"       — Cyrillic + numbers
 ```
 
 ### Weak Secret Examples (avoid)
 ```
-❌ "password"                — dictionary word, too short
-❌ "1234567890"              — only digits, too short
-❌ "qwerty123"               — keyboard pattern
+❌ "GitHub Account"              — using description as secret (weak!)
+❌ "password"                    — dictionary word, too short
+❌ "1234567890"                  — only digits, too short
+❌ "qwerty123"                   — keyboard pattern
+❌ Same as description           — never use the same value as password description
 ```
 
-## Cross-Platform Compatibility
+### Decentralized Nature
 
+**There is no "forgot password" button.** This is by design:
+
+- No central server can reset your passwords
+- No support team can recover your access
+- Your secret phrase is the ONLY key
+
+**This is the price of true decentralization** — you are completely in control.
+
+## Cross-Platform Implementations
+
+The same deterministic algorithm is available in multiple languages.
 SmartPassLib JS produces **identical passwords** to:
 
-| Platform   | Repository                                                                                                                |
-|------------|---------------------------------------------------------------------------------------------------------------------------|
-| Python     | [smartpasslib](https://github.com/smartlegionlab/smartpasslib)                                                            |
-| JavaScript | [smartpasslib-js](https://github.com/smartlegionlab/smartpasslib-js)                                                      |
-| Kotlin     | [smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin)                                              |
-| Go         | [smartpasslib-go](https://github.com/smartlegionlab/smartpasslib-go)                                                      |
-| Web        | [Web Manager](https://github.com/smartlegionlab/smart-password-manager-web)                                               |
-| Android    | [Android Manager](https://github.com/smartlegionlab/smart-password-manager-android)                                       |
-| Desktop    | [Desktop Manager](https://github.com/smartlegionlab/smart-password-manager-desktop)                                       |
-| CLI        | [CLI PassMan](https://github.com/smartlegionlab/clipassman) / [CLI PassGen](https://github.com/smartlegionlab/clipassgen) |
+| Language   | Repository                                                                   |
+|------------|:-----------------------------------------------------------------------------|
+| Python     | [smartpasslib](https://github.com/smartlegionlab/smartpasslib)               |
+| Kotlin     | [smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin) |
+| Go         | [smartpasslib-go](https://github.com/smartlegionlab/smartpasslib-go)         |
+| C#         | [smartpasslib-csharp](https://github.com/smartlegionlab/smartpasslib-csharp) |
 
 ## Testing
 
@@ -196,21 +224,29 @@ Open `test.html` in your browser to run the test suite.
 ## Ecosystem
 
 **Core Libraries:**
-- **[smartpasslib](https://github.com/smartlegionlab/smartpasslib)** - Python implementation
-- **[smartpasslib-js](https://github.com/smartlegionlab/smartpasslib-js)** - JavaScript implementation
-- **[smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin)** - Kotlin implementation
-- **[smartpasslib-go](https://github.com/smartlegionlab/smartpasslib-go)** - Go implementation
+- **[smartpasslib](https://github.com/smartlegionlab/smartpasslib)** - Python
+- **[smartpasslib-js](https://github.com/smartlegionlab/smartpasslib-js)** - JavaScript (this)
+- **[smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin)** - Kotlin
+- **[smartpasslib-go](https://github.com/smartlegionlab/smartpasslib-go)** - Go
+- **[smartpasslib-csharp](https://github.com/smartlegionlab/smartpasslib-csharp)** - C#
 
-**Applications:**
-- **[Desktop Manager](https://github.com/smartlegionlab/smart-password-manager-desktop)** - Cross-platform desktop app
-- **[CLI PassMan](https://github.com/smartlegionlab/clipassman)** - Console password manager
-- **[CLI PassGen](https://github.com/smartlegionlab/clipassgen)** - Console password generator
-- **[Web Manager](https://github.com/smartlegionlab/smart-password-manager-web)** - Web interface
-- **[Mobile/Andorid manager](https://github.com/smartlegionlab/smart-password-manager-android)** - Mobile/Andorid app
+**CLI Applications:**
+- **[CLI Smart Password Manager (Python)](https://github.com/smartlegionlab/clipassman)**
+- **[CLI Smart Password Generator (Python)](https://github.com/smartlegionlab/clipassgen)**
+- **[CLI Smart Password Manager (C#)](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli)**
+- **[CLI Smart Password Generator (C#)](https://github.com/smartlegionlab/SmartPasswordGeneratorCsharpCli)** 
+
+**Desktop Applications:**
+- **[Desktop Smart Password Manager (Python)](https://github.com/smartlegionlab/smart-password-manager-desktop)**
+- **[Desktop Smart Password Manager (C#)](https://github.com/smartlegionlab/SmartPasswordManagerCsharpDesktop)**
+
+**Other:**
+- **[Web Smart Password Manager](https://github.com/smartlegionlab/smart-password-manager-web)**
+- **[Android Smart Password Manager](https://github.com/smartlegionlab/smart-password-manager-android)**
 
 ## License
 
-**[BSD 3-Clause License](LICENSE)**
+**[BSD 3-Clause License](https://github.com/smartlegionlab/smartpasslib-js/blob/master/LICENSE)**
 
 Copyright (©) 2026, [Alexander Suvorov](https://github.com/smartlegionlab)
 
@@ -223,13 +259,5 @@ Copyright (©) 2026, [Alexander Suvorov](https://github.com/smartlegionlab)
 ## Support
 
 - **Issues**: [GitHub Issues](https://github.com/smartlegionlab/smartpasslib-js/issues)
-- **Documentation**: This [README](README.md)
-
----
-
-# Test Suite
-
-![Test Suite](https://github.com/smartlegionlab/smartpasslib-js/blob/master/data/images/logo.png)
-
----
+- **Documentation**: This [README](https://github.com/smartlegionlab/smartpasslib-js/blob/master/README.md)
 
