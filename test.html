@@ -69,7 +69,7 @@
     </style>
 </head>
 <body>
-    <h1>🔐 SmartPassLib v1.0.3 Test Suite</h1>
+    <h1>🔐 SmartPassLib v4.0.0 Test Suite</h1>
     <p>Cross-platform deterministic password generator for JavaScript</p>
     <hr>
 
@@ -80,7 +80,7 @@
         <input type="text" id="testSecret" value="MyCatHippo2026">
 
         <label>Password length:</label>
-        <input type="number" id="testLength" value="16" min="4" max="1000">
+        <input type="text" id="testLength" value="16" maxlength="3">
 
         <div class="mode-selector">
             <button id="modeSmart" class="mode-btn active">🔑 Smart</button>
@@ -104,7 +104,6 @@
         <pre>
 SmartPassLib.VERSION
 SmartPassLib.CHARS
-
 
 SmartPassLib.generatePrivateKey(secret)
 SmartPassLib.generatePublicKey(secret)
@@ -133,6 +132,75 @@ SmartPassLib.generateCode(length)
             const testResult = document.getElementById('testResult');
             const testOutput = document.getElementById('testOutput');
 
+            function validateAndNormalizeLength(lengthValue, mode) {
+                if (lengthValue === null || lengthValue === undefined || lengthValue === '') {
+                    return 12;
+                }
+
+                let length = parseInt(lengthValue);
+
+                if (isNaN(length) || length < 1) {
+                    return 12;
+                }
+
+                const min = (mode === 'code') ? 4 : 12;
+                const max = 100;
+
+                if (length < min) return min;
+                if (length > max) return max;
+                return length;
+            }
+
+            function updateLengthField(mode) {
+                if (!testLength) return;
+
+                let currentVal = testLength.value.trim();
+                let normalized = validateAndNormalizeLength(currentVal, mode);
+
+                const min = (mode === 'code') ? 4 : 12;
+                testLength.min = min;
+                testLength.max = 100;
+
+                if (currentVal === '' || isNaN(parseInt(currentVal)) || parseInt(currentVal) < min) {
+                    testLength.value = normalized;
+                } else if (parseInt(currentVal) > 100) {
+                    testLength.value = 100;
+                } else {
+                    testLength.value = parseInt(currentVal);
+                }
+            }
+
+            if (testLength) {
+                testLength.addEventListener('input', function(e) {
+                    let cleaned = this.value.replace(/[^\d]/g, '');
+
+                    if (cleaned === '') {
+                        this.value = '';
+                        return;
+                    }
+
+                    let num = parseInt(cleaned);
+                    if (!isNaN(num)) {
+                        const min = (currentMode === 'code') ? 4 : 12;
+                        if (num < min) {
+                            this.value = min;
+                        } else if (num > 100) {
+                            this.value = 100;
+                        } else {
+                            this.value = num;
+                        }
+                    } else {
+                        this.value = cleaned;
+                    }
+                });
+
+                testLength.addEventListener('blur', function() {
+                    if (this.value.trim() === '') {
+                        this.value = (currentMode === 'code') ? 8 : 16;
+                    }
+                });
+            }
+
             function setActiveMode(mode) {
                 [modeSmart, modeStrong, modeBase, modeCode].forEach(btn => {
                     if (btn) btn.classList.remove('active');
@@ -144,19 +212,7 @@ SmartPassLib.generateCode(length)
                 if (mode === 'code' && modeCode) modeCode.classList.add('active');
 
                 currentMode = mode;
-
-                if (testLength) {
-                    if (mode === 'code') {
-                        testLength.min = 4;
-                        testLength.max = 20;
-                        if (parseInt(testLength.value) < 4) testLength.value = 8;
-                        if (parseInt(testLength.value) > 20) testLength.value = 8;
-                    } else {
-                        testLength.min = 12;
-                        testLength.max = 1000;
-                        if (parseInt(testLength.value) < 12) testLength.value = 16;
-                    }
-                }
+                updateLengthField(mode);
             }
 
             if (modeSmart) modeSmart.onclick = function() { setActiveMode('smart'); };
@@ -167,20 +223,14 @@ SmartPassLib.generateCode(length)
             if (testGenerateBtn) {
                 testGenerateBtn.onclick = async function() {
                     const secret = testSecret ? testSecret.value : '';
-                    const length = parseInt(testLength ? testLength.value : '16');
+                    let lengthRaw = testLength ? testLength.value : '16';
+
+                    let length = validateAndNormalizeLength(lengthRaw, currentMode);
+
+                    if (testLength) testLength.value = length;
 
                     if (currentMode !== 'code' && (!secret || secret.length < 12)) {
                         testResult.innerHTML = '<span style="color: #f48771">❌ Secret phrase must be at least 12 characters</span>';
-                        return;
-                    }
-
-                    if (currentMode === 'code' && (length < 4 || length > 20)) {
-                        testResult.innerHTML = '<span style="color: #f48771">❌ Code length must be between 4 and 20</span>';
-                        return;
-                    }
-
-                    if (currentMode !== 'code' && (length < 12 || length > 1000)) {
-                        testResult.innerHTML = '<span style="color: #f48771">❌ Password length must be between 12 and 1000</span>';
                         return;
                     }
 
@@ -290,6 +340,8 @@ SmartPassLib.generateCode(length)
                     testOutput.innerHTML = html;
                 };
             }
+
+            updateLengthField('smart');
         });
     </script>
 </body>

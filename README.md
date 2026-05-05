@@ -1,4 +1,4 @@
-# SmartPassLib JS <sup>v1.0.3</sup>
+# SmartPassLib JS <sup>v4.0.0</sup>
 
 ---
 
@@ -32,6 +32,16 @@ smartpasslib stores nothing. Your secrets never leave your device. Passwords are
 
 ---
 
+## 🔄 Breaking Change (v4.0.0)
+
+> **⚠️ This version is NOT backward compatible with v1.x.x**
+
+Passwords generated with older versions **cannot be regenerated** with v4.0.0.
+
+📖 **Full migration instructions** → see [MIGRATION.md](https://github.com/smartlegionlab/smartpasslib-js/blob/master/MIGRATION.md)
+
+---
+
 ## Core Principles
 
 - **Zero-Storage Security**: No passwords or secret phrases are ever stored or transmitted
@@ -45,10 +55,10 @@ smartpasslib stores nothing. Your secrets never leave your device. Passwords are
 
 - **Decentralized & Serverless**: No central database, no cloud lock-in, complete user sovereignty
 - **Smart Password Generation**: Deterministic from secret phrase
-- **Public/Private Key System**: 30 iterations for private key, 60 for public key
+- **Public/Private Key System**: 15-30 iterations for private key, 45-60 for public key (dynamic per secret)
 - **Secret Verification**: Verify secret without exposing it
 - **Random Password Generation**: Cryptographically secure random passwords
-- **Authentication Codes**: Short codes for 2FA/MFA (4-20 chars)
+- **Authentication Codes**: Short codes for 2FA/MFA (4-100 chars)
 - **No Dependencies**: Pure JavaScript, uses Web Crypto API
 
 ## Security Model
@@ -56,6 +66,7 @@ smartpasslib stores nothing. Your secrets never leave your device. Passwords are
 - **Proof of Knowledge**: Public keys verify secrets without exposing them
 - **Decentralized Trust**: No third party needed — you control your secrets completely
 - **Deterministic Security**: Same input = same output, always reproducible across platforms
+- **Dynamic Iteration Counts**: Private key uses 15-30 iterations, public key uses 45-60 iterations (deterministic per secret)
 - **No Vulnerable Metadata Storage**: Only public keys and descriptions can be stored (optional)
 - **Zero Storage of Secrets**: Secret phrases exist only in your memory, private keys are derived on-demand and never persisted
 - **No Recovery Backdoors**: Lost secret = permanently lost passwords (by design)
@@ -71,14 +82,19 @@ smartpasslib stores nothing. Your secrets never leave your device. Passwords are
 
 ## Technical Foundation
 
-**Key derivation (same as Python/Go/Kotlin/C# versions):**
+**Key derivation (same as Python/C#/Go/Kotlin versions v4.0.0):**
 
-| Key Type    | Iterations | Purpose                                                 |
-|-------------|------------|---------------------------------------------------------|
-| Private Key | 30         | Password generation (never stored, never transmitted)   |
-| Public Key  | 60         | Verification (stored locally)                           |
+| Key Type    | Iterations              | Purpose                                                 |
+|-------------|-------------------------|---------------------------------------------------------|
+| Private Key | 15-30 (dynamic)         | Password generation (never stored, never transmitted)   |
+| Public Key  | 45-60 (dynamic)         | Verification (stored locally)                           |
 
-**Character Set:** `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$&*-_`
+**Character Set:** `!@#$%^&*()_+-=[]{};:,.<>?/ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz`
+
+**Validation Rules:**
+- Secret phrase: minimum 12 characters
+- Password length: 12-100 characters
+- Code length: 4-100 characters
 
 **Decentralized Architecture**:
 - No central authority required
@@ -102,7 +118,7 @@ const secret = "MyStrongSecretPhrase2026!";
 const length = 16;
 
 const password = await SmartPassLib.generateSmartPassword(secret, length);
-console.log(password); // e.g., "jrh_E5V!2#neNjnP"
+console.log(password);
 ```
 
 ### Generate Public/Private Keys
@@ -135,7 +151,7 @@ const strong = await SmartPassLib.generateStrongPassword(20);
 // Base random
 const base = await SmartPassLib.generateBasePassword(16);
 
-// Authentication code (4-20 chars)
+// Authentication code (4-100 chars)
 const code = await SmartPassLib.generateCode(8);
 ```
 
@@ -143,39 +159,37 @@ const code = await SmartPassLib.generateCode(8);
 
 ### Properties
 
-| Property             | Type   | Description                       |
-|----------------------|--------|-----------------------------------|
-| `VERSION`            | string | Library version                   |
-| `CHARS`              | string | Character set used for generation |
-| `PRIVATE_ITERATIONS` | number | 30 iterations for private key     |
-| `PUBLIC_ITERATIONS`  | number | 60 iterations for public key      |
+| Property  | Type   | Description                       |
+|-----------|--------|-----------------------------------|
+| `VERSION` | string | Library version (4.0.0)           |
+| `CHARS`   | string | Character set used for generation |
 
 ### Methods
 
 | Method                                  | Parameters        | Returns            | Description                      |
 |-----------------------------------------|-------------------|--------------------|----------------------------------|
-| `generatePrivateKey(secret)`            | secret: string    | Promise\<string\>  | Private key (30 iterations)      |
-| `generatePublicKey(secret)`             | secret: string    | Promise\<string\>  | Public key (60 iterations)       |
+| `generatePrivateKey(secret)`            | secret: string    | Promise\<string\>  | Private key (15-30 iterations)   |
+| `generatePublicKey(secret)`             | secret: string    | Promise\<string\>  | Public key (45-60 iterations)    |
 | `verifySecret(secret, publicKey)`       | secret, publicKey | Promise\<boolean\> | Verify secret matches public key |
 | `generateSmartPassword(secret, length)` | secret, length    | Promise\<string\>  | Deterministic password           |
 | `generateStrongPassword(length)`        | length            | Promise\<string\>  | Cryptographically random         |
 | `generateBasePassword(length)`          | length            | Promise\<string\>  | Simple random password           |
-| `generateCode(length)`                  | length            | Promise\<string\>  | Short code (4-20 chars)          |
+| `generateCode(length)`                  | length            | Promise\<string\>  | Short code (4-100 chars)         |
 
 ### Input Validation
 
 | Parameter       | Minimum  | Maximum    |
 |-----------------|----------|------------|
 | Secret phrase   | 12 chars | unlimited  |
-| Password length | 12 chars | 1000 chars |
-| Code length     | 4 chars  | 20 chars   |
+| Password length | 12 chars | 100 chars  |
+| Code length     | 4 chars  | 100 chars  |
 
 ## Security Requirements
 
 ### Secret Phrase
 - **Minimum 12 characters** (enforced)
 - Case-sensitive
-- Use mix of: uppercase, lowercase, numbers, symbols, emoji, or Cyrillic
+- Use mix of: uppercase, lowercase, numbers, symbols
 - Never store digitally
 - **NEVER use your password description as secret phrase**
 
@@ -183,16 +197,15 @@ const code = await SmartPassLib.generateCode(8);
 ```
 ✅ "MyStrongSecretPhrase2026!"   — mixed case + numbers + symbols
 ✅ "P@ssw0rd!LongSecret"         — special chars + numbers + length
-✅ "КотБегемот2026НаДиете"       — Cyrillic + numbers
+✅ "GitHubPersonal2026!"         — description + extra chars
 ```
 
 ### Weak Secret Examples (avoid)
 ```
+❌ "short"                       — too short, raises exception
 ❌ "GitHub Account"              — using description as secret (weak!)
 ❌ "password"                    — dictionary word, too short
 ❌ "1234567890"                  — only digits, too short
-❌ "qwerty123"                   — keyboard pattern
-❌ Same as description           — never use the same value as password description
 ```
 
 ### Decentralized Nature
@@ -260,4 +273,6 @@ Copyright (©) 2026, [Alexander Suvorov](https://github.com/smartlegionlab)
 
 - **Issues**: [GitHub Issues](https://github.com/smartlegionlab/smartpasslib-js/issues)
 - **Documentation**: This [README](https://github.com/smartlegionlab/smartpasslib-js/blob/master/README.md)
+
+---
 
