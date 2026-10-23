@@ -1,4 +1,4 @@
-# SmartPassLib JS <sup>v4.0.0</sup>
+# SmartPassLib JS <sup>v4.0.1</sup>
 
 ---
 
@@ -6,10 +6,10 @@
 Generate passwords from secrets, verify knowledge without exposure, manage metadata securely.
 
 **Now with Cross-Platform Determinism**: Same secret + same parameters = identical password on 
-**JavaScript, C#, Python, Go, Kotlin** and any language with SHA-256.
+**JavaScript, C#, Python, Go, Kotlin, Rust** and any language with SHA-256.
 
 **Decentralized by Design**: Unlike traditional password managers that store encrypted vaults on central servers, 
-smartpasslib stores nothing. Your secrets never leave your device. Passwords are regenerated on-demand — 
+smartpasslib stores nothing. Your secrets never leave your device. Passwords are regenerated on-demand - 
 **no cloud, no database, no trust required**.
 
 ---
@@ -22,23 +22,13 @@ smartpasslib stores nothing. Your secrets never leave your device. Passwords are
 
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 **By using this software, you agree to the full disclaimer terms.**
 
 **Summary:** Software provided "AS IS" without warranty. You assume all risks.
 
 **Full legal disclaimer:** See [DISCLAIMER.md](https://github.com/smartlegionlab/smartpasslib-js/blob/master/DISCLAIMER.md)
-
----
-
-## 🔄 Breaking Change (v4.0.0)
-
-> **⚠️ This version is NOT backward compatible with v1.x.x**
-
-Passwords generated with older versions **cannot be regenerated** with v4.0.0.
-
-📖 **Full migration instructions** → see [MIGRATION.md](https://github.com/smartlegionlab/smartpasslib-js/blob/master/MIGRATION.md)
 
 ---
 
@@ -64,7 +54,7 @@ Passwords generated with older versions **cannot be regenerated** with v4.0.0.
 ## Security Model
 
 - **Proof of Knowledge**: Public keys verify secrets without exposing them
-- **Decentralized Trust**: No third party needed — you control your secrets completely
+- **Decentralized Trust**: No third party needed - you control your secrets completely
 - **Deterministic Security**: Same input = same output, always reproducible across platforms
 - **Dynamic Iteration Counts**: Private key uses 15-30 iterations, public key uses 45-60 iterations (deterministic per secret)
 - **No Vulnerable Metadata Storage**: Only public keys and descriptions can be stored (optional)
@@ -82,7 +72,7 @@ Passwords generated with older versions **cannot be regenerated** with v4.0.0.
 
 ## Technical Foundation
 
-**Key derivation (same as Python/C#/Go/Kotlin versions v4.0.0):**
+**Key derivation (same as Python/C#/Go/Kotlin/Rust versions v4.0.1):**
 
 | Key Type    | Iterations              | Purpose                                                 |
 |-------------|-------------------------|---------------------------------------------------------|
@@ -100,7 +90,7 @@ Passwords generated with older versions **cannot be regenerated** with v4.0.0.
 - No central authority required
 - Metadata can be synced via any channel (USB, cloud, even paper)
 - Your security depends only on your secret phrase, not on any service provider
-- Works offline — no internet connection required
+- Works offline - no internet connection required
 
 ## Installation
 
@@ -161,7 +151,7 @@ const code = await SmartPassLib.generateCode(8);
 
 | Property  | Type   | Description                       |
 |-----------|--------|-----------------------------------|
-| `VERSION` | string | Library version (4.0.0)           |
+| `VERSION` | string | Library version (4.0.1)           |
 | `CHARS`   | string | Character set used for generation |
 
 ### Methods
@@ -195,17 +185,17 @@ const code = await SmartPassLib.generateCode(8);
 
 ### Strong Secret Examples
 ```
-✅ "MyStrongSecretPhrase2026!"   — mixed case + numbers + symbols
-✅ "P@ssw0rd!LongSecret"         — special chars + numbers + length
-✅ "GitHubPersonal2026!"         — description + extra chars
+"MyStrongSecretPhrase2026!"   - mixed case + numbers + symbols
+"P@ssw0rd!LongSecret"         - special chars + numbers + length
+"GitHubPersonal2026!"         - description + extra chars
 ```
 
 ### Weak Secret Examples (avoid)
 ```
-❌ "short"                       — too short, raises exception
-❌ "GitHub Account"              — using description as secret (weak!)
-❌ "password"                    — dictionary word, too short
-❌ "1234567890"                  — only digits, too short
+"short"                       - too short, raises exception
+"GitHub Account"              - using description as secret (weak!)
+"password"                    - dictionary word, too short
+"1234567890"                  - only digits, too short
 ```
 
 ### Decentralized Nature
@@ -216,7 +206,7 @@ const code = await SmartPassLib.generateCode(8);
 - No support team can recover your access
 - Your secret phrase is the ONLY key
 
-**This is the price of true decentralization** — you are completely in control.
+**This is the price of true decentralization** - you are completely in control.
 
 ## Cross-Platform Implementations
 
@@ -229,6 +219,7 @@ SmartPassLib JS produces **identical passwords** to:
 | Kotlin     | [smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin) |
 | Go         | [smartpasslib-go](https://github.com/smartlegionlab/smartpasslib-go)         |
 | C#         | [smartpasslib-csharp](https://github.com/smartlegionlab/smartpasslib-csharp) |
+| Rust       | [smartpasslib-rs](https://github.com/smartlegionlab/smartpasslib-rs)         |
 
 ## Testing
 
@@ -242,16 +233,20 @@ Open `test.html` in your browser to run the test suite.
 - **[smartpasslib-kotlin](https://github.com/smartlegionlab/smartpasslib-kotlin)** - Kotlin
 - **[smartpasslib-go](https://github.com/smartlegionlab/smartpasslib-go)** - Go
 - **[smartpasslib-csharp](https://github.com/smartlegionlab/smartpasslib-csharp)** - C#
+- **[smartpasslib-rs](https://github.com/smartlegionlab/smartpasslib-rs)** - Rust
 
 **CLI Applications:**
 - **[CLI Smart Password Manager (Python)](https://github.com/smartlegionlab/clipassman)**
 - **[CLI Smart Password Generator (Python)](https://github.com/smartlegionlab/clipassgen)**
 - **[CLI Smart Password Manager (C#)](https://github.com/smartlegionlab/SmartPasswordManagerCsharpCli)**
-- **[CLI Smart Password Generator (C#)](https://github.com/smartlegionlab/SmartPasswordGeneratorCsharpCli)** 
+- **[CLI Smart Password Generator (C#)](https://github.com/smartlegionlab/SmartPasswordGeneratorCsharpCli)**
+- **[CLI Smart Password Manager (Rust)](https://github.com/smartlegionlab/smart-password-manager-cli-rs)**
 
 **Desktop Applications:**
 - **[Desktop Smart Password Manager (Python)](https://github.com/smartlegionlab/smart-password-manager-desktop)**
 - **[Desktop Smart Password Manager (C#)](https://github.com/smartlegionlab/SmartPasswordManagerCsharpDesktop)**
+- **[Desktop Smart Password Manager (Rust, GUI)](https://github.com/smartlegionlab/smart-password-manager-gui-rs)**
+- **[Desktop Smart Password Manager (Rust, TUI)](https://github.com/smartlegionlab/smart-password-manager-tui-rs)**
 
 **Other:**
 - **[Web Smart Password Manager](https://github.com/smartlegionlab/smart-password-manager-web)**
